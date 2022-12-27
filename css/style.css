@@ -2,8 +2,26 @@ body {
   font-family: Arial, Verdana, sans-serif;
 }
 
-container {
+.container {
   max-width: 1200px;
   padding: 40px 15px;
   margin: 0 auto;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10%;
+  height: 150px;
+  border-radius: 15px;
+  background-color: rgb(33, 27, 210);
+  color: rgb(33, 27, 210);
+  font-size: 45px;
+  font-weight: 600;
+  transition: color 0.3 ease-in-out;
+}
+
+.card--open {
+  color: #fff;
 }

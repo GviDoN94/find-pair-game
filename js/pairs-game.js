@@ -24,6 +24,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
   const sectionMain = createElement('section', 'main'),
         container = createElement('div', 'container'),
         title = createElement('h1', 'title', 'Пары'),

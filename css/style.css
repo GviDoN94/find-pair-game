@@ -32,10 +32,10 @@ body {
   height: 150px;
   border-radius: 15px;
   background-color: rgb(33, 27, 210);
-  color: rgb(33, 27, 210);
+  color: transparent;
   font-size: 45px;
   font-weight: 600;
-  transition-property: background-color, transform;
+  transition-property: color, background-color, transform;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
   cursor: pointer;
@@ -45,11 +45,13 @@ body {
 }
 
 .card--open {
+  color: rgb(33, 27, 210);
   background-color:rgb(18, 238, 241);
   transform: scale(1.05);
 }
 
 .card--success {
+  color: rgb(33, 27, 210);
   background-color:rgb(20, 236, 0);
   transform: scale(0.95);
 }

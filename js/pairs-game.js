@@ -1,6 +1,5 @@
 'use strict';
 window.addEventListener('DOMContentLoaded', () => {
-
   function createElement(name, classEl = null, text = null) {
     const element = document.createElement(name);
     if (classEl) {
@@ -14,14 +13,12 @@ window.addEventListener('DOMContentLoaded', () => {
     parent.append(element);
   }
 
-  function createCards(amount) {
-    for (let i = 0, number = 1; i < amount; i++, number++) {
-      const card = createElement('li', 'card', number);
-      addElementIntoParent(game, card);
-      if (number === amount / 2) {
-        number = 0;
-      }
+  function createArrayOfNumbers(amount) {
+    const arr = [];
+    for (let i = 1; i <= amount / 2; i++) {
+      arr.push(i, i);
     }
+    return arr;
   }
 
   function shuffleArray(arr) {
@@ -29,6 +26,52 @@ window.addEventListener('DOMContentLoaded', () => {
       let j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
+  }
+
+  function createAndInsertCards(arr, parent) {
+    arr.forEach(numberOfCard => {
+      const card = createElement('li', 'card', numberOfCard);
+      addElementIntoParent(parent, card);
+    });
+  }
+
+  function startGame(amountCards, parent) {
+    const arrOfNumbers = createArrayOfNumbers(amountCards);
+    shuffleArray(arrOfNumbers);
+    createAndInsertCards(arrOfNumbers, parent);
+
+    let firstCard = null,
+        secondCard = null;
+
+    parent.addEventListener('click', (e) => {
+      const currenElement = e.target;
+
+      if (!currenElement.classList.contains('card') ||
+           currenElement.classList.contains('card--success') ||
+           currenElement.classList.contains('card--open')) {
+            return;
+      }
+
+      if (secondCard && firstCard.textContent !== secondCard.textContent) {
+        firstCard.classList.remove('card--open');
+        secondCard.classList.remove('card--open');
+        firstCard = null;
+        secondCard = null;
+      }
+
+      if (!firstCard) {
+        firstCard = currenElement;
+        firstCard.classList.add('card--open');
+      } else if (firstCard.textContent !== currenElement.textContent) {
+        secondCard = currenElement;
+        secondCard.classList.add('card--open');
+      } else {
+        firstCard.classList.add('card--success');
+        currenElement.classList.add('card--success');
+        firstCard = null;
+        secondCard = null;
+      }
+    });
   }
 
   const sectionMain = createElement('section', 'main'),
@@ -41,26 +84,5 @@ window.addEventListener('DOMContentLoaded', () => {
   addElementIntoParent(container, title);
   addElementIntoParent(container, game);
 
-  createCards(16);
-
-  const cards = game.querySelectorAll('.card');
-  console.log(cards);
-
-  game.addEventListener ('click', (e) => {
-    const event = e.target;
-    if (!event.classList.contains('card') ||
-         event.classList.contains('card--success')) {
-          return;
-    }
-
-    cards.forEach(card => {
-      if (event === card) {
-        if (!card.classList.contains('card--open')) {
-          card.classList.add('card--open');
-        } else {
-          card.classList.remove('card--open');
-        }
-      }
-    });
-  });
+  startGame(16, game);
 });

@@ -21,6 +21,7 @@ body {
   row-gap: 20px;
   column-gap: 20px;
   margin: 0;
+  margin-bottom: 30px;
   padding: 0;
   list-style: none;
 }
@@ -54,4 +55,26 @@ body {
   color: rgb(33, 27, 210);
   background-color:rgb(20, 236, 0);
   transform: scale(0.95);
+}
+
+.play-again-btn {
+  display: none;
+  margin: 0 auto;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-weight: 500;
+  background-color: rgb(33, 27, 210);
+  transition: background-color 0.3s ease-in-out;
+  outline: none;
+  cursor: pointer;
+}
+
+.play-again-btn:hover {
+  background-color: rgb(49, 69, 255);
+}
+
+.play-again-btn:active{
+  background-color: rgb(23, 20, 129);
 }

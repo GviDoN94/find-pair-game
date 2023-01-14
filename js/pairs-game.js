@@ -15,20 +15,38 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const sectionMain = createElement('section', 'main'),
         container = createElement('div', 'container'),
-        title = createElement('h1', 'title', 'Игра в пары'),
-        game = createElement('ul', 'game'),
-        playAgainBtn = createElement('button', 'play-again-btn', 'Сыграть ещё раз');
+        title = createElement('h1', 'title', 'Найди пару'),
+        game = createElement('ul', 'game');
 
-  playAgainBtn.addEventListener('click', () => {
-    startGame(8);
-    playAgainBtn.style.display = 'none';
-  });
-
-  renderElement(document.body, sectionMain);
-  renderElement(sectionMain, container);
   renderElement(container, title);
   renderElement(container, game);
-  renderElement(container, playAgainBtn);
+  renderElement(sectionMain, container);
+  renderElement(document.body, sectionMain);
+
+  const modal = createElement('div', 'modal'),
+        modalContainer = createElement('div', 'modal__container'),
+        modalMessage = createElement('span', 'modal__message', 'Победа!'),
+        modalBtn = createElement('button', 'modal__btn', 'Сыграть ещё раз');
+
+  modalBtn.addEventListener('click', () => {
+    closeModal();
+    startGame(8);
+  });
+
+  renderElement(modalContainer, modalMessage);
+  renderElement(modalContainer, modalBtn);
+  renderElement(modal, modalContainer);
+  renderElement(document.body, modal);
+
+  function openModal() {
+    modal.classList.add('modal--open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('modal--open');
+    document.body.style.overflow = '';
+  }
 
   function createArrayOfNumbers(amount) {
     const arr = [];
@@ -94,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
         storage.openedCards++;
 
         if(storage.openedCards === amountPairs) {
-          playAgainBtn.style.display = 'block';
+          openModal();
           storage.openedCards = 0;
         }
       }

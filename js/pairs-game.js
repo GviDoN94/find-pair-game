@@ -25,8 +25,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const modal = createElement('div', 'modal'),
         modalContainer = createElement('div', 'modal__container'),
-        modalMessage = createElement('span', 'modal__message', 'Победа!'),
-        modalBtn = createElement('button', 'modal__btn', 'Сыграть ещё раз');
+        modalMessage = createElement('span', 'modal__message'),
+        modalBtn = createElement('button', 'modal__btn', 'Сыграть ещё раз'),
+        modalMessages = {
+          win: 'Победа',
+          lose: 'Время вышло!'
+        };
 
   modalBtn.addEventListener('click', () => {
     closeModal();
@@ -38,7 +42,8 @@ window.addEventListener('DOMContentLoaded', () => {
   renderElement(modal, modalContainer);
   renderElement(document.body, modal);
 
-  function openModal() {
+  function openModal(message) {
+    modalMessage.textContent = message;
     modal.classList.add('modal--open');
     document.body.style.overflow = 'hidden';
   }
@@ -47,6 +52,44 @@ window.addEventListener('DOMContentLoaded', () => {
     modal.classList.remove('modal--open');
     document.body.style.overflow = '';
   }
+
+  const timer = createElement('div', 'timer'),
+  timerMinutes = createElement('span', 'timer__minutes', '01'),
+  timerSeparator = createElement('span', 'timer__separator', ':'),
+  timerSeconds = createElement('span', 'timer__seconds', '00');
+
+  renderElement(timer, timerMinutes);
+  renderElement(timer, timerSeparator);
+  renderElement(timer, timerSeconds);
+  title.after(timer);
+
+  let timerInterval = null;
+
+  function setTimer(time) {
+    function addZero(num) {
+      if (num < 10 && num >= 0) {
+        return `0${num}`;
+      }
+      return num;
+    }
+
+    function updateTimer() {
+      const minutes = Math.floor(curentTime / 60),
+      seconds = curentTime % 60;
+      timerMinutes.textContent = addZero(minutes);
+      timerSeconds.textContent = addZero(seconds);
+      if (curentTime <= 0) {
+        clearInterval(timerInterval);
+        openModal(modalMessages.lose);
+      }
+      curentTime--;
+    }
+
+    let curentTime = time;
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
 
   function createArrayOfNumbers(amount) {
     const arr = [];
@@ -82,6 +125,8 @@ window.addEventListener('DOMContentLoaded', () => {
       openedCards: 0
     };
 
+    setTimer(60);
+
     game.addEventListener('click', (e) => {
       const currenElement = e.target;
 
@@ -112,7 +157,8 @@ window.addEventListener('DOMContentLoaded', () => {
         storage.openedCards++;
 
         if(storage.openedCards === amountPairs) {
-          openModal();
+          clearInterval(timerInterval)
+          openModal(modalMessages.win);
           storage.openedCards = 0;
         }
       }

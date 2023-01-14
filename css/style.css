@@ -37,17 +37,20 @@ body {
   align-items: center;
   height: 100px;
   border-radius: 15px;
-  background-color: rgb(33, 27, 210);
-  color: transparent;
   font-size: 45px;
   font-weight: 600;
   transition-property: color, background-color, transform;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
-  cursor: pointer;
   -moz-user-select: none;
   -khtml-user-select: none;
   user-select: none;
+}
+
+.card--close {
+  background-color: rgb(33, 27, 210);
+  color: transparent;
+  cursor: pointer;
 }
 
 .card--open {
@@ -60,7 +63,6 @@ body {
   color: rgb(33, 27, 210);
   background-color:rgb(20, 236, 0);
   transform: scale(0.95);
-  cursor: auto;
 }
 
 .modal {

@@ -16,7 +16,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const sectionMain = createElement('section', 'main'),
         container = createElement('div', 'container'),
         title = createElement('h1', 'title', 'Найди пару'),
-        game = createElement('ul', 'game');
+        game = createElement('ul', 'game'),
+        storage = {
+          firstCard: null,
+          secondCard: null,
+          openedCards: 0,
+          closeCardsTime: null,
+          startGame: false
+        };
 
   renderElement(container, title);
   renderElement(container, game);
@@ -54,9 +61,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const timer = createElement('div', 'timer'),
-  timerMinutes = createElement('span', 'timer__minutes'),
-  timerSeparator = createElement('span', 'timer__separator', ':'),
-  timerSeconds = createElement('span', 'timer__seconds');
+        timerMinutes = createElement('span', 'timer__minutes'),
+        timerSeparator = createElement('span', 'timer__separator', ':'),
+        timerSeconds = createElement('span', 'timer__seconds');
 
   renderElement(timer, timerMinutes);
   renderElement(timer, timerSeparator);
@@ -65,35 +72,51 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let timerInterval = null;
 
-      function addZero(num) {
-      if (num < 10 && num >= 0) {
-        return `0${num}`;
+  function addZero(num) {
+    if (num < 10 && num >= 0) {
+      return `0${num}`;
+    }
+    return num;
+  }
+
+  function renderTime(time) {
+    const minutes = Math.floor(time / 60),
+          seconds = time % 60;
+    timerMinutes.textContent = addZero(minutes);
+    timerSeconds.textContent = addZero(seconds);
+  }
+
+  function setTimer(currentTime) {
+    function updateTimer() {
+      renderTime(currentTime);
+      if (currentTime <= 0) {
+        endGame(modalMessages.lose);
       }
-      return num;
+      currentTime--;
     }
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
 
-      function renderTime(time) {
+  function changeClass(element, newClass, oldClass) {
+    element.classList.add(newClass);
+    element.classList.remove(oldClass);
+  }
 
-        const minutes = Math.floor(time / 60),
-              seconds = time % 60;
-        timerMinutes.textContent = addZero(minutes);
-        timerSeconds.textContent = addZero(seconds);
-    }
+  function wrongPair () {
+    changeClass(storage.firstCard, 'card--close','card--open');
+    changeClass(storage.secondCard, 'card--close','card--open');
+    storage.firstCard = null;
+    storage.secondCard = null;
+    clearInterval(storage.closeCardsTime);
+  }
 
-    function setTimer(currentTime) {
-      function updateTimer() {
-        renderTime(currentTime);
-        if (currentTime <= 0) {
-          clearInterval(timerInterval);
-          openModal(modalMessages.lose);
-        }
-        currentTime--;
-      }
-
-      updateTimer();
-      timerInterval = setInterval(updateTimer, 1000);
-    }
-
+  function endGame(message) {
+    clearInterval(timerInterval);
+    openModal(message);
+    storage.openedCards = 0;
+    storage.startGame = false;
+  }
 
   function createArrayOfNumbers(amount) {
     const arr = [];
@@ -113,6 +136,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function createAndInsertCards(arr, parent) {
     arr.forEach(numberOfCard => {
       const card = createElement('li', 'card', numberOfCard);
+      card.classList.add('card--close');
       renderElement(parent, card);
     });
   }
@@ -120,61 +144,49 @@ window.addEventListener('DOMContentLoaded', () => {
   function startGame(amountPairs, time) {
     game.replaceChildren();
     renderTime(time);
-    setTimer(time);
     const arrOfNumbers = createArrayOfNumbers(amountPairs);
     shuffleArray(arrOfNumbers);
     createAndInsertCards(arrOfNumbers, game);
 
-    function clearStorage (obj) {
-      obj.firstCard.classList.remove('card--open');
-      obj.secondCard.classList.remove('card--open');
-      obj.firstCard = null;
-      obj.secondCard = null;
-    }
-
-    const storage = {
-      firstCard: null,
-      secondCard: null,
-      openedCards: 0,
-      closeCardsTime: null,
-    };
-
     game.addEventListener('click', (e) => {
-      clearInterval(storage.closeCardsTime);
       const currenElement = e.target;
 
-      if (!currenElement.classList.contains('card') ||
-           currenElement.classList.contains('card--success') ||
-           currenElement.classList.contains('card--open')) {
+      if (!currenElement.classList.contains('card--close')) {
             return;
+      }
+
+      clearInterval(storage.closeCardsTime);
+
+      if (!storage.startGame) {
+        setTimer(time);
+        storage.startGame = true;
       }
 
       if (storage.firstCard &&
           storage.secondCard &&
           storage.firstCard.textContent !== storage.secondCard.textContent) {
-            clearStorage(storage);
+            wrongPair(storage);
           }
 
       if (!storage.firstCard) {
-        storage.firstCard = currenElement;
-        storage.firstCard.classList.add('card--open');
+          storage.firstCard = currenElement;
+          changeClass(storage.firstCard, 'card--open', 'card--close');
       } else if (storage.firstCard.textContent !== currenElement.textContent) {
-        storage.secondCard = currenElement;
-        storage.secondCard.classList.add('card--open');
-        storage.closeCardsTime = setInterval(clearStorage, 2000, storage);
-      } else {
-        storage.firstCard.classList.add('card--success');
-        currenElement.classList.add('card--success');
-        storage.firstCard = null;
-        storage.secondCard = null;
-        storage.openedCards++;
+          storage.secondCard = currenElement;
+          changeClass(storage.secondCard, 'card--open', 'card--close');
+          storage.closeCardsTime = setInterval(wrongPair, 2000, storage);
+        } else {
+            changeClass(storage.firstCard, 'card--success', 'card--open');
+            changeClass(currenElement, 'card--success', 'card--open');
+            storage.firstCard.classList.remove('card--close');
+            currenElement.classList.remove('card--close');
+            storage.firstCard = null;
+            storage.openedCards++;
 
-        if(storage.openedCards === amountPairs) {
-          clearInterval(timerInterval)
-          openModal(modalMessages.win);
-          storage.openedCards = 0;
-        }
-      }
+            if(storage.openedCards === amountPairs) {
+              endGame(modalMessages.win);
+            }
+          }
     });
   }
 

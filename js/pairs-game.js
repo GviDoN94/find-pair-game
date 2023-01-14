@@ -65,31 +65,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let timerInterval = null;
 
-  // function setTimer(time) {
-  //   function addZero(num) {
-  //     if (num < 10 && num >= 0) {
-  //       return `0${num}`;
-  //     }
-  //     return num;
-  //   }
-
-  //   function updateTimer() {
-  //     const minutes = Math.floor(curentTime / 60),
-  //     seconds = curentTime % 60;
-  //     timerMinutes.textContent = addZero(minutes);
-  //     timerSeconds.textContent = addZero(seconds);
-  //     if (curentTime <= 0) {
-  //       clearInterval(timerInterval);
-  //       openModal(modalMessages.lose);
-  //     }
-  //     curentTime--;
-  //   }
-
-  //   let curentTime = time;
-  //   updateTimer();
-  //   timerInterval = setInterval(updateTimer, 1000);
-  // }
-
       function addZero(num) {
       if (num < 10 && num >= 0) {
         return `0${num}`;
@@ -144,21 +119,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function startGame(amountPairs, time) {
     game.replaceChildren();
+    renderTime(time);
+    setTimer(time);
     const arrOfNumbers = createArrayOfNumbers(amountPairs);
     shuffleArray(arrOfNumbers);
     createAndInsertCards(arrOfNumbers, game);
+
+    function clearStorage (obj) {
+      obj.firstCard.classList.remove('card--open');
+      obj.secondCard.classList.remove('card--open');
+      obj.firstCard = null;
+      obj.secondCard = null;
+    }
 
     const storage = {
       firstCard: null,
       secondCard: null,
       openedCards: 0,
-      startGame: false
+      closeCardsTime: null,
     };
 
-    renderTime(time);
-    setTimer(time);
-
     game.addEventListener('click', (e) => {
+      clearInterval(storage.closeCardsTime);
       const currenElement = e.target;
 
       if (!currenElement.classList.contains('card') ||
@@ -167,17 +149,11 @@ window.addEventListener('DOMContentLoaded', () => {
             return;
       }
 
-      // if(!storage.startGame) {
-      //   storage.startGame = true;
-      //   setTimer(60);
-      // }
-
-      if (storage.secondCard && storage.firstCard.textContent !== storage.secondCard.textContent) {
-        storage.firstCard.classList.remove('card--open');
-        storage.secondCard.classList.remove('card--open');
-        storage.firstCard = null;
-        storage.secondCard = null;
-      }
+      if (storage.firstCard &&
+          storage.secondCard &&
+          storage.firstCard.textContent !== storage.secondCard.textContent) {
+            clearStorage(storage);
+          }
 
       if (!storage.firstCard) {
         storage.firstCard = currenElement;
@@ -185,6 +161,7 @@ window.addEventListener('DOMContentLoaded', () => {
       } else if (storage.firstCard.textContent !== currenElement.textContent) {
         storage.secondCard = currenElement;
         storage.secondCard.classList.add('card--open');
+        storage.closeCardsTime = setInterval(clearStorage, 2000, storage);
       } else {
         storage.firstCard.classList.add('card--success');
         currenElement.classList.add('card--success');

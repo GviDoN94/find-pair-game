@@ -60,6 +60,7 @@ body {
   color: rgb(33, 27, 210);
   background-color:rgb(20, 236, 0);
   transform: scale(0.95);
+  cursor: auto;
 }
 
 .modal {

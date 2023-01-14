@@ -28,13 +28,13 @@ window.addEventListener('DOMContentLoaded', () => {
         modalMessage = createElement('span', 'modal__message'),
         modalBtn = createElement('button', 'modal__btn', 'Сыграть ещё раз'),
         modalMessages = {
-          win: 'Победа',
+          win: 'Победа!',
           lose: 'Время вышло!'
         };
 
   modalBtn.addEventListener('click', () => {
     closeModal();
-    startGame(8);
+    startGame(8, 60);
   });
 
   renderElement(modalContainer, modalMessage);
@@ -54,9 +54,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const timer = createElement('div', 'timer'),
-  timerMinutes = createElement('span', 'timer__minutes', '01'),
+  timerMinutes = createElement('span', 'timer__minutes'),
   timerSeparator = createElement('span', 'timer__separator', ':'),
-  timerSeconds = createElement('span', 'timer__seconds', '00');
+  timerSeconds = createElement('span', 'timer__seconds');
 
   renderElement(timer, timerMinutes);
   renderElement(timer, timerSeparator);
@@ -65,30 +65,59 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let timerInterval = null;
 
-  function setTimer(time) {
-    function addZero(num) {
+  // function setTimer(time) {
+  //   function addZero(num) {
+  //     if (num < 10 && num >= 0) {
+  //       return `0${num}`;
+  //     }
+  //     return num;
+  //   }
+
+  //   function updateTimer() {
+  //     const minutes = Math.floor(curentTime / 60),
+  //     seconds = curentTime % 60;
+  //     timerMinutes.textContent = addZero(minutes);
+  //     timerSeconds.textContent = addZero(seconds);
+  //     if (curentTime <= 0) {
+  //       clearInterval(timerInterval);
+  //       openModal(modalMessages.lose);
+  //     }
+  //     curentTime--;
+  //   }
+
+  //   let curentTime = time;
+  //   updateTimer();
+  //   timerInterval = setInterval(updateTimer, 1000);
+  // }
+
+      function addZero(num) {
       if (num < 10 && num >= 0) {
         return `0${num}`;
       }
       return num;
     }
 
-    function updateTimer() {
-      const minutes = Math.floor(curentTime / 60),
-      seconds = curentTime % 60;
-      timerMinutes.textContent = addZero(minutes);
-      timerSeconds.textContent = addZero(seconds);
-      if (curentTime <= 0) {
-        clearInterval(timerInterval);
-        openModal(modalMessages.lose);
-      }
-      curentTime--;
+      function renderTime(time) {
+
+        const minutes = Math.floor(time / 60),
+              seconds = time % 60;
+        timerMinutes.textContent = addZero(minutes);
+        timerSeconds.textContent = addZero(seconds);
     }
 
-    let curentTime = time;
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000);
-  }
+    function setTimer(currentTime) {
+      function updateTimer() {
+        renderTime(currentTime);
+        if (currentTime <= 0) {
+          clearInterval(timerInterval);
+          openModal(modalMessages.lose);
+        }
+        currentTime--;
+      }
+
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
 
 
   function createArrayOfNumbers(amount) {
@@ -113,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function startGame(amountPairs) {
+  function startGame(amountPairs, time) {
     game.replaceChildren();
     const arrOfNumbers = createArrayOfNumbers(amountPairs);
     shuffleArray(arrOfNumbers);
@@ -122,10 +151,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const storage = {
       firstCard: null,
       secondCard: null,
-      openedCards: 0
+      openedCards: 0,
+      startGame: false
     };
 
-    setTimer(60);
+    renderTime(time);
+    setTimer(time);
 
     game.addEventListener('click', (e) => {
       const currenElement = e.target;
@@ -135,6 +166,11 @@ window.addEventListener('DOMContentLoaded', () => {
            currenElement.classList.contains('card--open')) {
             return;
       }
+
+      // if(!storage.startGame) {
+      //   storage.startGame = true;
+      //   setTimer(60);
+      // }
 
       if (storage.secondCard && storage.firstCard.textContent !== storage.secondCard.textContent) {
         storage.firstCard.classList.remove('card--open');
@@ -165,5 +201,5 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  startGame(8);
+  startGame(8, 60);
 });

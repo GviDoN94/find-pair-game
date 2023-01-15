@@ -21,6 +21,8 @@ window.addEventListener('DOMContentLoaded', () => {
         title = createElement('h1', 'Найди пару', 'title'),
         form = createElement('form', '', 'form'),
         formTop = createElement('div','','form__top'),
+        formMinusBtn = createElement('button', '-', 'form__minus-btn'),
+        formPlusBtn = createElement('button', '+', 'form__plus-btn'),
         formInput = createElement('input', '', 'form__input'),
         formBtn = createElement('button', 'Начать игру', 'btn'),
         formDescr = createElement('p',
@@ -38,9 +40,13 @@ window.addEventListener('DOMContentLoaded', () => {
         };
 
         formInput.value = 4;
+        formPlusBtn.type = 'button';
+        formMinusBtn.type = 'button';
 
   renderElement(container, title);
+  renderElement(formTop, formMinusBtn);
   renderElement(formTop, formInput);
+  renderElement(formTop, formPlusBtn);
   renderElement(formTop, formBtn);
   renderElement(form, formTop);
   renderElement(form, formDescr);

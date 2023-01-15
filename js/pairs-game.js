@@ -19,6 +19,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const sectionMain = createElement('section', '', 'main'),
         container = createElement('div', '', 'container'),
         title = createElement('h1', 'Найди пару', 'title'),
+        form = createElement('form', '', 'form'),
+        formTop = createElement('div','','form__top'),
+        formInput = createElement('input', '', 'form__input'),
+        formBtn = createElement('button', 'Начать игру', 'btn'),
+        formDescr = createElement('p',
+        `Для начала игры выберите количество карточек по вертикали/горизонтали и
+        нажмите кнопку "Начать игру". Возможные варианты (2, 4, 6, 8, 10). По
+        умолчанию будет выбрано 4.`,
+        'form__descr'),
         game = createElement('ul', '', 'game'),
         storage = {
           firstCard: null,
@@ -28,15 +37,22 @@ window.addEventListener('DOMContentLoaded', () => {
           startGame: false
         };
 
+        formInput.value = 4;
+
   renderElement(container, title);
+  renderElement(formTop, formInput);
+  renderElement(formTop, formBtn);
+  renderElement(form, formTop);
+  renderElement(form, formDescr);
+  renderElement(container, form);
   renderElement(container, game);
   renderElement(sectionMain, container);
   renderElement(document.body, sectionMain);
 
-  const modal = createElement('div', '', 'modal' , 'modal--close'),
+  const modal = createElement('div', '', 'modal' , 'hide'),
         modalContainer = createElement('div', '', 'modal__container'),
         modalMessage = createElement('span', '', 'modal__message'),
-        modalBtn = createElement('button', 'Сыграть ещё раз', 'modal__btn'),
+        modalBtn = createElement('button', 'Сыграть ещё раз', 'btn'),
         modalMessages = {
           win: 'Победа!',
           lose: 'Время вышло!'

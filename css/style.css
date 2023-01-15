@@ -20,8 +20,65 @@ body {
   text-transform: uppercase;
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+}
+
+.form__top {
+  display: flex;
+  margin-bottom: 25px;
+}
+
+.form__descr {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.form__input {
+  text-align: center;
+  margin-right: 15px;
+  padding: 0;
+  border-color: #000;
+  border-radius: 5px;
+  outline: none;
+  width: 43px;
+  font-size: 30px;
+}
+
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 25px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: rgb(33, 27, 210);
+  transition: background-color 0.3s ease-in-out;
+  outline: none;
+  cursor: pointer;
+}
+
+.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hide {
+  visibility: hidden;
+  opacity: 0;
+}
+
 .game {
-  display: grid;
+  /* display: grid; */
+  display: none;
   grid-template-columns: repeat(4, 100px);
   justify-content: center;
   row-gap: 20px;
@@ -29,6 +86,7 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
+  visibility: hidden;
 }
 
 .card {
@@ -80,7 +138,7 @@ body {
   transition-timing-function: ease-in-out;
 }
 
-.modal.modal--open {
+.modal--open {
   visibility: visible;
   opacity: 1;
 }
@@ -117,18 +175,6 @@ body {
   text-transform: uppercase;
 }
 
-.modal__btn {
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 25px;
-  font-weight: 500;
-  background-color: rgb(33, 27, 210);
-  transition: background-color 0.3s ease-in-out;
-  outline: none;
-  cursor: pointer;
-}
-
 .play-again-btn:hover {
   background-color: rgb(49, 69, 255);
 }
@@ -138,6 +184,7 @@ body {
 }
 
 .timer {
+  display: none;
   margin-bottom: 10px;
   font-size: 40px;
   font-weight: 700;

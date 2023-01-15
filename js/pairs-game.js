@@ -1,11 +1,14 @@
 'use strict';
+
 window.addEventListener('DOMContentLoaded', () => {
-  function createElement(name, classEl = null, text = null) {
+  function createElement(name, text, ...classesEl) {
     const element = document.createElement(name);
-    if (classEl) {
-      element.classList.add(classEl);
+    if (classesEl.length) {
+      element.classList.add(...classesEl);
     }
-    element.textContent = text;
+    if(text) {
+      element.textContent = text;
+    }
     return element;
   }
 
@@ -13,10 +16,10 @@ window.addEventListener('DOMContentLoaded', () => {
     parent.append(element);
   }
 
-  const sectionMain = createElement('section', 'main'),
-        container = createElement('div', 'container'),
-        title = createElement('h1', 'title', 'Найди пару'),
-        game = createElement('ul', 'game'),
+  const sectionMain = createElement('section', '', 'main'),
+        container = createElement('div', '', 'container'),
+        title = createElement('h1', 'Найди пару', 'title'),
+        game = createElement('ul', '', 'game'),
         storage = {
           firstCard: null,
           secondCard: null,
@@ -30,10 +33,10 @@ window.addEventListener('DOMContentLoaded', () => {
   renderElement(sectionMain, container);
   renderElement(document.body, sectionMain);
 
-  const modal = createElement('div', 'modal'),
-        modalContainer = createElement('div', 'modal__container'),
-        modalMessage = createElement('span', 'modal__message'),
-        modalBtn = createElement('button', 'modal__btn', 'Сыграть ещё раз'),
+  const modal = createElement('div', '', 'modal'),
+        modalContainer = createElement('div', '', 'modal__container'),
+        modalMessage = createElement('span', '', 'modal__message'),
+        modalBtn = createElement('button', 'Сыграть ещё раз', 'modal__btn'),
         modalMessages = {
           win: 'Победа!',
           lose: 'Время вышло!'
@@ -60,10 +63,10 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
   }
 
-  const timer = createElement('div', 'timer'),
-        timerMinutes = createElement('span', 'timer__minutes'),
-        timerSeparator = createElement('span', 'timer__separator', ':'),
-        timerSeconds = createElement('span', 'timer__seconds');
+  const timer = createElement('div', '', 'timer'),
+        timerMinutes = createElement('span', '', 'timer__minutes'),
+        timerSeparator = createElement('span', ':', 'timer__separator'),
+        timerSeconds = createElement('span', '', 'timer__seconds');
 
   renderElement(timer, timerMinutes);
   renderElement(timer, timerSeparator);
@@ -98,9 +101,9 @@ window.addEventListener('DOMContentLoaded', () => {
     timerInterval = setInterval(updateTimer, 1000);
   }
 
-  function changeClass(element, newClass, oldClass) {
+  function changeClass(element, newClass, ...oldClasses) {
     element.classList.add(newClass);
-    element.classList.remove(oldClass);
+    element.classList.remove(...oldClasses);
   }
 
   function wrongPair () {
@@ -114,6 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function endGame(message) {
     clearInterval(timerInterval);
     openModal(message);
+    storage.firstCard = null;
     storage.openedCards = 0;
     storage.startGame = false;
   }
@@ -135,8 +139,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function createAndInsertCards(arr, parent) {
     arr.forEach(numberOfCard => {
-      const card = createElement('li', 'card', numberOfCard);
-      card.classList.add('card--close');
+      const card = createElement('li', numberOfCard, 'card', 'card--close');
       renderElement(parent, card);
     });
   }
@@ -176,10 +179,8 @@ window.addEventListener('DOMContentLoaded', () => {
           changeClass(storage.secondCard, 'card--open', 'card--close');
           storage.closeCardsTime = setInterval(wrongPair, 2000, storage);
         } else {
-            changeClass(storage.firstCard, 'card--success', 'card--open');
-            changeClass(currenElement, 'card--success', 'card--open');
-            storage.firstCard.classList.remove('card--close');
-            currenElement.classList.remove('card--close');
+            changeClass(storage.firstCard, 'card--success', 'card--open', 'card--close');
+            changeClass(currenElement, 'card--success', 'card--open', 'card--close');
             storage.firstCard = null;
             storage.openedCards++;
 

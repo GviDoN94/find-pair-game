@@ -28,6 +28,7 @@ body {
   padding: 20px;
   border-radius: 10px;
   max-width: 600px;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .form__top {
@@ -77,19 +78,17 @@ body {
   cursor: pointer;
 }
 
-.show {
-  visibility: visible;
+.form--show {
+  display: flex;
   opacity: 1;
 }
 
-.hide {
-  visibility: hidden;
+.form--hide {
+  display: none;
   opacity: 0;
 }
 
 .game {
-  /* display: grid; */
-  display: none;
   grid-template-columns: repeat(4, 100px);
   justify-content: center;
   row-gap: 20px;
@@ -97,7 +96,17 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
-  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.game--show {
+  display: grid;
+  opacity: 1;
+}
+
+.game--hide {
+  display: none;
+  opacity: 0;
 }
 
 .card {
@@ -149,12 +158,12 @@ body {
   transition-timing-function: ease-in-out;
 }
 
-.modal--open {
+.modal--show {
   visibility: visible;
   opacity: 1;
 }
 
-.modal--close {
+.modal--hide {
   visibility: hidden;
   opacity: 0;
 }
@@ -199,4 +208,15 @@ body {
   margin-bottom: 10px;
   font-size: 40px;
   font-weight: 700;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.timer--show {
+  display: block;
+  opacity: 1;
+}
+
+.timer--hide {
+  display: none;
+  opacity: 0;
 }

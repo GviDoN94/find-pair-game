@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
         нажмите кнопку "Начать игру". Возможные варианты (2, 4, 6, 8, 10). По
         умолчанию будет выбрано 4.`,
         'form__descr'),
-        game = createElement('ul', '', 'game'),
+        game = createElement('ul', '', 'game', 'game--hide'),
         storage = {
           firstCard: null,
           secondCard: null,
@@ -55,7 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderElement(sectionMain, container);
   renderElement(document.body, sectionMain);
 
-  const modal = createElement('div', '', 'modal' , 'hide'),
+  const modal = createElement('div', '', 'modal' , 'modal--hide'),
         modalContainer = createElement('div', '', 'modal__container'),
         modalMessage = createElement('span', '', 'modal__message'),
         modalBtn = createElement('button', 'Сыграть ещё раз', 'btn'),
@@ -66,7 +66,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   modalBtn.addEventListener('click', () => {
     closeModal();
-    startGame(8);
+    changeClass(form, 'form--show', 'form--hide');
+    changeClass(timer, 'timer--hide', 'timer--show');
+    changeClass(game, 'game--hide', 'game--show');
+
   });
 
   renderElement(modalContainer, modalMessage);
@@ -76,12 +79,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function openModal(message) {
     modalMessage.textContent = message;
-    changeClass(modal, 'modal--open', 'modal--close');
+    changeClass(modal, 'modal--show', 'modal--hide');
     document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
-    changeClass(modal, 'modal--close', 'modal--open');
+    changeClass(modal, 'modal--hide', 'modal--show');
     document.body.style.overflow = '';
   }
 
@@ -170,6 +173,9 @@ window.addEventListener('DOMContentLoaded', () => {
     game.replaceChildren();
     game.style.gridTemplateColumns = `repeat(${rows}, 100px)`;
     renderTime(time);
+    changeClass(form, 'form--hide', 'form--show');
+    changeClass(timer, 'timer--show', 'timer--hide');
+    changeClass(game, 'game--show', 'game--hide');
     const arrOfNumbers = createArrayOfNumbers(amountPairs);
     shuffleArray(arrOfNumbers);
     createAndInsertCards(arrOfNumbers, game);
@@ -216,5 +222,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  startGame(8);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    startGame(8);
+  });
+
+
 });

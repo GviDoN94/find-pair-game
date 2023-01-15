@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderElement(sectionMain, container);
   renderElement(document.body, sectionMain);
 
-  const modal = createElement('div', '', 'modal'),
+  const modal = createElement('div', '', 'modal' , 'modal--close'),
         modalContainer = createElement('div', '', 'modal__container'),
         modalMessage = createElement('span', '', 'modal__message'),
         modalBtn = createElement('button', 'Сыграть ещё раз', 'modal__btn'),
@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   modalBtn.addEventListener('click', () => {
     closeModal();
-    startGame(8, 60);
+    startGame(8);
   });
 
   renderElement(modalContainer, modalMessage);
@@ -54,12 +54,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function openModal(message) {
     modalMessage.textContent = message;
-    modal.classList.add('modal--open');
+    changeClass(modal, 'modal--open', 'modal--close');
     document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
-    modal.classList.remove('modal--open');
+    changeClass(modal, 'modal--close', 'modal--open');
     document.body.style.overflow = '';
   }
 
@@ -144,8 +144,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function startGame(amountPairs, time) {
+  function startGame(amountPairs, rows = 4, time = 60) {
     game.replaceChildren();
+    game.style.gridTemplateColumns = `repeat(${rows}, 100px)`;
     renderTime(time);
     const arrOfNumbers = createArrayOfNumbers(amountPairs);
     shuffleArray(arrOfNumbers);
@@ -179,8 +180,10 @@ window.addEventListener('DOMContentLoaded', () => {
           changeClass(storage.secondCard, 'card--open', 'card--close');
           storage.closeCardsTime = setInterval(wrongPair, 2000, storage);
         } else {
-            changeClass(storage.firstCard, 'card--success', 'card--open', 'card--close');
-            changeClass(currenElement, 'card--success', 'card--open', 'card--close');
+            changeClass(storage.firstCard,
+              'card--success', 'card--open', 'card--close');
+            changeClass(currenElement,
+              'card--success', 'card--open', 'card--close');
             storage.firstCard = null;
             storage.openedCards++;
 
@@ -191,5 +194,5 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  startGame(8, 60);
+  startGame(8);
 });

@@ -75,8 +75,6 @@ body {
   text-align: center;
   background-color: rgba(0,0,0,.5);
   overflow: hidden;
-  visibility: hidden;
-  opacity: 0;
   transition-property: opacity, visibility;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
@@ -85,6 +83,11 @@ body {
 .modal.modal--open {
   visibility: visible;
   opacity: 1;
+}
+
+.modal--close {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .modal::before {

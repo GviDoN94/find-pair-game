@@ -25,16 +25,18 @@ window.addEventListener('DOMContentLoaded', () => {
         formPlusBtn = createElement('button', '+', 'form__plus-btn'),
         formInput = createElement('input', '', 'form__input'),
         formBtn = createElement('button', 'Начать игру', 'btn'),
+        formError = createElement('span',
+        'Введено некорректное значение. Прочитайе правила ниже.',
+        'form__error', 'invisible'),
         formDescr = createElement('p',
         `Для начала игры выберите количество карточек по вертикали/горизонтали и
-        нажмите кнопку "Начать игру". Возможные варианты (2, 4, 6, 8, 10). По
-        умолчанию будет выбрано 4.`,
+        нажмите кнопку "Начать игру". Возможные варианты (2, 4, 6, 8, 10).`,
         'form__descr'),
-        game = createElement('ul', '', 'game', 'game--hide'),
+        game = createElement('ul', '', 'game', 'hide'),
         gameOptions = {
           2: {
             amount: 4,
-            size: 200
+            size: 170
           },
           4: {
             amount: 16,
@@ -71,13 +73,14 @@ window.addEventListener('DOMContentLoaded', () => {
   renderElement(formTop, formPlusBtn);
   renderElement(formTop, formBtn);
   renderElement(form, formTop);
+  renderElement(form, formError);
   renderElement(form, formDescr);
   renderElement(container, form);
   renderElement(container, game);
   renderElement(sectionMain, container);
   renderElement(document.body, sectionMain);
 
-  const modal = createElement('div', '', 'modal' , 'modal--hide'),
+  const modal = createElement('div', '', 'modal' , 'invisible'),
         modalContainer = createElement('div', '', 'modal__container'),
         modalMessage = createElement('span', '', 'modal__message'),
         modalBtn = createElement('button', 'Сыграть ещё раз', 'btn'),
@@ -88,9 +91,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   modalBtn.addEventListener('click', () => {
     closeModal();
-    changeClass(form, 'form--show', 'form--hide');
-    changeClass(timer, 'timer--hide', 'timer--show');
-    changeClass(game, 'game--hide', 'game--show');
+    changeClass(form, 'form--show', 'hide');
+    changeClass(timer, 'hide', 'timer--show');
+    changeClass(game, 'hide', 'game--show');
     formInput.value = 4;
   });
 
@@ -101,16 +104,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function openModal(message) {
     modalMessage.textContent = message;
-    changeClass(modal, 'modal--show', 'modal--hide');
+    changeClass(modal, 'visible', 'invisible');
     document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
-    changeClass(modal, 'modal--hide', 'modal--show');
+    changeClass(modal, 'invisible', 'visible');
     document.body.style.overflow = '';
   }
 
-  const timer = createElement('div', '', 'timer'),
+  const timer = createElement('div', '', 'timer', 'hide'),
         timerMinutes = createElement('span', '', 'timer__minutes'),
         timerSeparator = createElement('span', ':', 'timer__separator'),
         timerSeconds = createElement('span', '', 'timer__seconds');
@@ -196,9 +199,9 @@ window.addEventListener('DOMContentLoaded', () => {
     game.replaceChildren();
     game.style.gridTemplateColumns = `repeat(${cardInRow}, ${gameOptions[cardInRow].size}px)`;
     renderTime(time);
-    changeClass(form, 'form--hide', 'form--show');
-    changeClass(timer, 'timer--show', 'timer--hide');
-    changeClass(game, 'game--show', 'game--hide');
+    changeClass(form, 'hide', 'form--show');
+    changeClass(timer, 'timer--show', 'hide');
+    changeClass(game, 'game--show', 'hide');
     const arrOfNumbers = createArrayOfNumbers(gameOptions[cardInRow].amount);
     shuffleArray(arrOfNumbers);
     createAndInsertCards(arrOfNumbers, game);
@@ -212,8 +215,8 @@ window.addEventListener('DOMContentLoaded', () => {
       clearInterval(storage.closeCardsTime);
 
       if (!storage.startGame) {
-        setTimer(time);
-        storage.startGame = true;
+          setTimer(time);
+          storage.startGame = true;
       }
 
       if (storage.firstCard &&
@@ -229,19 +232,19 @@ window.addEventListener('DOMContentLoaded', () => {
           storage.secondCard = currenElement;
           changeClass(storage.secondCard, 'card--open', 'card--close');
           storage.closeCardsTime = setInterval(wrongPair, 2000, storage);
-        } else {
-            changeClass(storage.firstCard,
-              'card--success', 'card--open', 'card--close');
-            changeClass(currenElement,
-              'card--success', 'card--open', 'card--close');
-            storage.firstCard = null;
-            storage.openedCards += 2;
+      } else {
+          changeClass(storage.firstCard,
+            'card--success', 'card--open', 'card--close');
+          changeClass(currenElement,
+            'card--success', 'card--open', 'card--close');
+          storage.firstCard = null;
+          storage.openedCards += 2;
 
-            if(storage.openedCards === gameOptions[cardInRow].amount) {
-              endGame(modalMessages.win);
-              game.removeEventListener('click', gameChecks);
-            }
+          if(storage.openedCards === gameOptions[cardInRow].amount) {
+            endGame(modalMessages.win);
+            game.removeEventListener('click', gameChecks);
           }
+      }
     }
 
     game.addEventListener('click', gameChecks);
@@ -250,17 +253,33 @@ window.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const inputValue = formInput.value;
-    startGame(inputValue);
+    if(inputValue % 2 === 0 && inputValue >= 2 && inputValue <= 10) {
+        startGame(inputValue);
+    } else {
+        changeClass(formError, 'visible', 'invisible');
+    }
   });
 
   formTop.addEventListener('click', (e) => {
-    const currentNum = +formInput.value;
-      if (e.target.classList.contains('form__plus-btn') &&
-          currentNum >= 2 && currentNum < 10) {
-            formInput.value = currentNum + 2;
-      } else if (e.target.classList.contains('form__minus-btn') &&
-          currentNum <= 10 && currentNum > 2) {
-            formInput.value = currentNum - 2;
+    const currentNum = +formInput.value,
+          plusBtn = e.target.classList.contains('form__plus-btn'),
+          minusBtn = e.target.classList.contains('form__minus-btn');
+
+      if (plusBtn && currentNum >= 2 && currentNum < 10) {
+        formInput.value = currentNum + 2 - (currentNum % 2);
+        changeClass(formError, 'invisible', 'visible');
+      } else if (minusBtn && currentNum > 2 && currentNum <= 10) {
+        formInput.value = currentNum - 2 + (currentNum % 2);
+        changeClass(formError, 'invisible', 'visible');
+      } else if (plusBtn && currentNum < 2) {
+        formInput.value = 2;
+      } else if (minusBtn && currentNum > 10) {
+        formInput.value = 10;
       }
+  });
+
+  formInput.addEventListener('input', (e) => {
+    changeClass(formError, 'invisible', 'visible');
+    e.target.value = e.target.value.replace(/\D/g, '').substr(0, 2);
   });
 });

@@ -31,9 +31,19 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
+.form--show {
+  display: flex;
+  opacity: 1;
+}
+
+.hide {
+  display: none;
+  opacity: 0;
+}
+
 .form__top {
   display: flex;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 }
 
 .form__plus-btn,
@@ -54,8 +64,17 @@ body {
   border-color: #000;
   border-radius: 5px;
   outline: none;
-  width: 43px;
+  width: 46px;
   font-size: 30px;
+}
+
+.form__error {
+  margin-bottom: 5px;
+  color: #ff0000;
+  font-weight: 600;
+  transition-property: opacity, visibility;
+  transition-duration: 0.3;
+  transition-timing-function: ease-in-out;
 }
 
 .form__descr {
@@ -78,16 +97,6 @@ body {
   cursor: pointer;
 }
 
-.form--show {
-  display: flex;
-  opacity: 1;
-}
-
-.form--hide {
-  display: none;
-  opacity: 0;
-}
-
 .game {
   grid-template-columns: repeat(4, 100px);
   justify-content: center;
@@ -102,11 +111,6 @@ body {
 .game--show {
   display: grid;
   opacity: 1;
-}
-
-.game--hide {
-  display: none;
-  opacity: 0;
 }
 
 .card {
@@ -158,12 +162,12 @@ body {
   transition-timing-function: ease-in-out;
 }
 
-.modal--show {
+.visible {
   visibility: visible;
   opacity: 1;
 }
 
-.modal--hide {
+.invisible {
   visibility: hidden;
   opacity: 0;
 }
@@ -204,7 +208,6 @@ body {
 }
 
 .timer {
-  display: none;
   margin-bottom: 10px;
   font-size: 40px;
   font-weight: 700;
@@ -216,7 +219,3 @@ body {
   opacity: 1;
 }
 
-.timer--hide {
-  display: none;
-  opacity: 0;
-}

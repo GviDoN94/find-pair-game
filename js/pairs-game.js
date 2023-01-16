@@ -252,4 +252,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const inputValue = formInput.value;
     startGame(inputValue);
   });
+
+  formTop.addEventListener('click', (e) => {
+    const currentNum = +formInput.value;
+      if (e.target.classList.contains('form__plus-btn') &&
+          currentNum >= 2 && currentNum < 10) {
+            formInput.value = currentNum + 2;
+      } else if (e.target.classList.contains('form__minus-btn') &&
+          currentNum <= 10 && currentNum > 2) {
+            formInput.value = currentNum - 2;
+      }
+  });
 });

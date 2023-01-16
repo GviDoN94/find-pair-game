@@ -31,6 +31,28 @@ window.addEventListener('DOMContentLoaded', () => {
         умолчанию будет выбрано 4.`,
         'form__descr'),
         game = createElement('ul', '', 'game', 'game--hide'),
+        gameOptions = {
+          2: {
+            amount: 4,
+            size: 200
+          },
+          4: {
+            amount: 16,
+            size: 120,
+          },
+          6: {
+            amount: 36,
+            size: 80,
+          },
+          8: {
+            amount: 64,
+            size: 70
+          },
+          10: {
+            amount: 100,
+            size: 60
+          }
+        },
         storage = {
           firstCard: null,
           secondCard: null,
@@ -69,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
     changeClass(form, 'form--show', 'form--hide');
     changeClass(timer, 'timer--hide', 'timer--show');
     changeClass(game, 'game--hide', 'game--show');
-
+    formInput.value = 4;
   });
 
   renderElement(modalContainer, modalMessage);
@@ -149,7 +171,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function createArrayOfNumbers(amount) {
     const arr = [];
-    for (let i = 1; i <= amount; i++) {
+    for (let i = 1; i <= amount / 2; i++) {
       arr.push(i, i);
     }
     return arr;
@@ -166,23 +188,23 @@ window.addEventListener('DOMContentLoaded', () => {
     arr.forEach(numberOfCard => {
       const card = createElement('li', numberOfCard, 'card', 'card--close');
       renderElement(parent, card);
+      card.style.height = `${card.offsetWidth}px`;
     });
   }
 
-  function startGame(amountPairs, rows = 4, time = 60) {
+  function startGame(cardInRow = 4, time = 60) {
     game.replaceChildren();
-    game.style.gridTemplateColumns = `repeat(${rows}, 100px)`;
+    game.style.gridTemplateColumns = `repeat(${cardInRow}, ${gameOptions[cardInRow].size}px)`;
     renderTime(time);
     changeClass(form, 'form--hide', 'form--show');
     changeClass(timer, 'timer--show', 'timer--hide');
     changeClass(game, 'game--show', 'game--hide');
-    const arrOfNumbers = createArrayOfNumbers(amountPairs);
+    const arrOfNumbers = createArrayOfNumbers(gameOptions[cardInRow].amount);
     shuffleArray(arrOfNumbers);
     createAndInsertCards(arrOfNumbers, game);
 
-    game.addEventListener('click', (e) => {
+    function gameChecks(e) {
       const currenElement = e.target;
-
       if (!currenElement.classList.contains('card--close')) {
             return;
       }
@@ -213,19 +235,21 @@ window.addEventListener('DOMContentLoaded', () => {
             changeClass(currenElement,
               'card--success', 'card--open', 'card--close');
             storage.firstCard = null;
-            storage.openedCards++;
+            storage.openedCards += 2;
 
-            if(storage.openedCards === amountPairs) {
+            if(storage.openedCards === gameOptions[cardInRow].amount) {
               endGame(modalMessages.win);
+              game.removeEventListener('click', gameChecks);
             }
           }
-    });
+    }
+
+    game.addEventListener('click', gameChecks);
   }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    startGame(8);
+    const inputValue = formInput.value;
+    startGame(inputValue);
   });
-
-
 });

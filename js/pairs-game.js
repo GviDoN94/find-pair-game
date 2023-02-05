@@ -36,22 +36,27 @@ window.addEventListener('DOMContentLoaded', () => {
         gameOptions = {
           2: {
             amount: 4,
+            time: 30,
             size: 170
           },
           4: {
             amount: 16,
+            time: 60,
             size: 120,
           },
           6: {
             amount: 36,
+            time: 120,
             size: 80,
           },
           8: {
             amount: 64,
+            time: 300,
             size: 70
           },
           10: {
             amount: 100,
+            time: 420,
             size: 60
           }
         },
@@ -198,7 +203,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function startGame(cardInRow = 4, time = 60) {
     game.replaceChildren();
     game.style.gridTemplateColumns = `repeat(${cardInRow}, ${gameOptions[cardInRow].size}px)`;
-    renderTime(time);
+    renderTime(gameOptions[cardInRow].time);
     changeClass(form, 'hide', 'form--show');
     changeClass(timer, 'timer--show', 'hide');
     changeClass(game, 'game--show', 'hide');
@@ -215,7 +220,7 @@ window.addEventListener('DOMContentLoaded', () => {
       clearInterval(storage.closeCardsTime);
 
       if (!storage.startGame) {
-          setTimer(time);
+          setTimer(gameOptions[cardInRow].time);
           storage.startGame = true;
       }
 

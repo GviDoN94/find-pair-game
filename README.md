@@ -1,1 +1,1 @@
-# Find pair game is [here](https://find-pair.vladislavsurin.ru/)
+# You can watch it [here](https://find-pair.gvidon94.ru/)
